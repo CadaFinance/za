@@ -63,7 +63,7 @@ jobs:
           path: dist/zugchain-deposit-cli
 
   build-macos:
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
       
@@ -80,6 +80,8 @@ jobs:
           python setup.py install
           
       - name: Build macOS binary
+        env:
+          PYTHONHASHSEED: "42"
         run: |
           pyinstaller --onefile --name zugchain-deposit-cli staking_deposit/deposit.py
           chmod +x dist/zugchain-deposit-cli
@@ -117,7 +119,7 @@ jobs:
             release/zugchain-deposit-cli-linux-amd64
             release/zugchain-deposit-cli-darwin-amd64
           body: |
-            ## ZugChain Deposit CLI
+            ## ZugChain Deposit CLI v${{ github.ref_name }}
             
             ### Downloads
             
@@ -130,9 +132,14 @@ jobs:
             ### Usage
             
             ```bash
-            ./zugchain-deposit-cli new-mnemonic --num_validators=1
+            # Windows
+            ./zugchain-deposit-cli.exe new-mnemonic --num_validators=1
+            
+            # Linux/macOS
+            chmod +x zugchain-deposit-cli-*
+            ./zugchain-deposit-cli-linux-amd64 new-mnemonic --num_validators=1
             ```
             
-            See [README](https://github.com/ZugChain/deposit-cli#readme) for full documentation.
+            See [README](https://github.com/CadaFinance/za#readme) for full documentation.
           draft: false
           prerelease: false
