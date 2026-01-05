@@ -63,20 +63,11 @@ def generate_keys_arguments_decorator(function: Callable[..., Any]) -> Callable[
             type=click.Path(exists=True, file_okay=False, dir_okay=True),
         ),
         jit_option(
-            callback=captive_prompt_callback(
-                lambda x: closest_match(x, list(ALL_CHAINS.keys())),
-                choice_prompt_func(
-                    lambda: load_text(['chain', 'prompt'], func='generate_keys_arguments_decorator'),
-                    list(ALL_CHAINS.keys())
-                ),
-            ),
+            # No prompt - ZugChain is the only chain
             default=ZUGCHAIN,
             help=lambda: load_text(['chain', 'help'], func='generate_keys_arguments_decorator'),
             param_decls='--chain',
-            prompt=choice_prompt_func(
-                lambda: load_text(['chain', 'prompt'], func='generate_keys_arguments_decorator'),
-                list(ALL_CHAINS.keys())
-            ),
+            is_eager=True,
         ),
         jit_option(
             callback=captive_prompt_callback(
@@ -98,9 +89,9 @@ def generate_keys_arguments_decorator(function: Callable[..., Any]) -> Callable[
                 lambda: load_text(['arg_execution_address', 'confirm'], func='generate_keys_arguments_decorator'),
                 lambda: load_text(['arg_execution_address', 'mismatch'], func='generate_keys_arguments_decorator'),
             ),
-            default=None,
             help=lambda: load_text(['arg_execution_address', 'help'], func='generate_keys_arguments_decorator'),
             param_decls=['--execution_address', '--eth1_withdrawal_address'],
+            prompt=lambda: load_text(['arg_execution_address', 'prompt'], func='generate_keys_arguments_decorator'),
         ),
     ]
     for decorator in reversed(decorators):

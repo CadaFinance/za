@@ -61,20 +61,11 @@ FUNC_NAME = 'generate_bls_to_execution_change'
     type=click.Path(exists=True, file_okay=False, dir_okay=True),
 )
 @jit_option(
-    callback=captive_prompt_callback(
-        lambda x: closest_match(x, list(ALL_CHAINS.keys())),
-        choice_prompt_func(
-            lambda: load_text(['arg_chain', 'prompt'], func=FUNC_NAME),
-            list(ALL_CHAINS.keys())
-        ),
-    ),
+    # No prompt - ZugChain is the only chain
     default=ZUGCHAIN,
     help=lambda: load_text(['arg_chain', 'help'], func=FUNC_NAME),
     param_decls='--chain',
-    prompt=choice_prompt_func(
-        lambda: load_text(['arg_chain', 'prompt'], func=FUNC_NAME),
-        list(ALL_CHAINS.keys())
-    ),
+    is_eager=True,
 )
 @load_mnemonic_arguments_decorator
 @jit_option(
