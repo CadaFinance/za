@@ -71,10 +71,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          
+
+      - name: Install Rust (for lru-dict)
+        uses: dtolnay/rust-action@stable
+        
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
           pip install pyinstaller
           python setup.py install
@@ -89,7 +92,7 @@ jobs:
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zugchain-deposit-cli-darwin-amd64
+          name: zugchain-deposit-cli-darwin-arm64
           path: dist/zugchain-deposit-cli
 
   release:
@@ -109,7 +112,7 @@ jobs:
           mkdir -p release
           cp artifacts/zugchain-deposit-cli-windows-amd64/zugchain-deposit-cli.exe release/zugchain-deposit-cli-windows-amd64.exe
           cp artifacts/zugchain-deposit-cli-linux-amd64/zugchain-deposit-cli release/zugchain-deposit-cli-linux-amd64
-          cp artifacts/zugchain-deposit-cli-darwin-amd64/zugchain-deposit-cli release/zugchain-deposit-cli-darwin-amd64
+          cp artifacts/zugchain-deposit-cli-darwin-arm64/zugchain-deposit-cli release/zugchain-deposit-cli-darwin-arm64
           
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -117,7 +120,7 @@ jobs:
           files: |
             release/zugchain-deposit-cli-windows-amd64.exe
             release/zugchain-deposit-cli-linux-amd64
-            release/zugchain-deposit-cli-darwin-amd64
+            release/zugchain-deposit-cli-darwin-arm64
           body: |
             ## ZugChain Deposit CLI v${{ github.ref_name }}
             
@@ -127,7 +130,7 @@ jobs:
             |----------|------|
             | Windows | `zugchain-deposit-cli-windows-amd64.exe` |
             | Linux | `zugchain-deposit-cli-linux-amd64` |
-            | macOS | `zugchain-deposit-cli-darwin-amd64` |
+            | macOS (M1/M2/M3) | `zugchain-deposit-cli-darwin-arm64` |
             
             ### Usage
             
